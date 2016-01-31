@@ -16,6 +16,25 @@ console.log("CLIENT_ID: " + CLIENT_ID);
 
 var AUTH_STRING = "?client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET;
 
+function getBodyPromise(full_name, branch, filePath, fileNm){
+        //TODO: Commented out until bug fix
+        //Promise which gets a file's body. Run only if the object type is a file
+        console.log("fileNm " + filePath + fileNm);
+
+        return new Promise(function(resolve, reject){
+          request("https://raw.githubusercontent.com/" + full_name + "/" + branch + "/" + filePath + "/" + fileNm, function(error, response, body){
+            if (!error && response.statusCode == 200) {
+              resolve(body);
+            }
+            else{
+              console.log(body);
+              console.log("filebodyerr" + response.statusCode);
+              reject(error, response.statusCode);
+            }
+          });
+        });
+      }
+
 //Crawls the repo
 export class repository_crawl{
   //NOTE: ES6 has issues with classwide variables, set them here using 'this'
@@ -79,8 +98,7 @@ export class repository_crawl{
 
           //If this file has content then download content
           if(item["type"] === "file"){
-            console.log(item["name"]);
-            getFileBody.then(function(body){
+            getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
                 //TODO
                 var file = filePath.split("/");
 
@@ -91,7 +109,7 @@ export class repository_crawl{
           }
           else{
             //Otherwise crawl through the directory
-            console.log(item["name"]);
+
             new repository_crawl(full_name, "/" + item["name"], branch, crawlRule).beginDirectoryCrawl(item["name"] + "/");
           }
         });
@@ -130,21 +148,6 @@ export class repository_crawl{
       });
     });
 
-    //TODO: Commented out until bug fix
-    //Promise which gets a file's body. Run only if the object type is a file
-    let getFileBody = new Promise(function(resolve, reject){
-
-      /*request("https://raw.githubusercontent.com/" + full_name + "/" + branch + "/" + filePath, function(error, response, body){
-        if (!error && response.statusCode == 200) {
-          resolve(body);
-        }
-        else{
-          console.log(response.statusCode);
-          reject(error, response.statusCode);
-        }
-      });*/
-    });
-
 
     findRootFiles.then(function(body){
       let searchResponse = JSON.parse(body);
@@ -152,20 +155,20 @@ export class repository_crawl{
 
         //If this file has content then download content
         if(item["type"] === "file"){
-          console.log("Incased "+ item["name"]);
+          var file = filePath.split("/");
 
-          getFileBody.then(function(body){
-              //TODO
-              var file = filePath.split("/");
-
-              var fileSplit = file[file.length - 1].split(".");
-              var fileName = fileSplit[fileSplit.length - 1];
+          var fileSplit = file[file.length - 1].split(".");
+          var fileName = fileSplit[fileSplit.length - 1];
+          getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
               crawlRule.parseFile(body, fileName);
+          },
+          function(error){
+            console.log(error);
+            throw new Error(error);
           });
         }
         else{
           //Otherwise crawl through the directory
-          console.log(currentDir + item["name"]);
 
           new repository_crawl(full_name, "/" + currentDir + item["name"], branch, crawlRule).beginDirectoryCrawl(currentDir + item["name"] + "/");
         }
