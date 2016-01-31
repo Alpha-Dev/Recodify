@@ -33,4 +33,6 @@ gulp.task('test', ['moveTests'], function() {
 
 gulp.task('default', ['build','moveTests',"test"]);
 
+gulp.task('buildRun', ['build', 'runScript']);
+
 gulp.task('buildTest', ['build', 'test']);
