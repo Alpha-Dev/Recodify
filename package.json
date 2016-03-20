@@ -6,7 +6,8 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "gulp": "^3.9.1",
-    "gulp-browserify": "^0.5.1"
+    "gulp-browserify": "^0.5.1",
+    "request": "^2.67.0"
   },
   "jshintConfig": {
     "esnext": true
