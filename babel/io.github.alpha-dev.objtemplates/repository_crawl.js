@@ -54,7 +54,7 @@ export class repository_crawl{
         });
       },
       function(error, responseCode){
-        Error(error + " : " + responseCode);
+        console.log(error + " : " + responseCode);
       });
 
   }

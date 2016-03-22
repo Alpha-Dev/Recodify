@@ -1,7 +1,6 @@
 import {repository_crawl} from "./repository_crawl.js";
 import {Rule} from "../io.github.alpha-dev.rules/Rule.js";
-import {Request} from "../io.github.alpha-dev.utils/request.js"
-var URL = require('url-parse');
+var request = require('request');
 
 export class Crawler{
 
@@ -10,11 +9,12 @@ export class Crawler{
   }
   beginCrawl(query){
     //First step
+
+    var bSurl = this.BaseSearchURL;
+
     let initialSearch = new Promise(function(resolve, reject, urlQuery){
 
-      let url = new URL(BaseSearchURL + "/" + urlQuery);
-
-      new request(url.hostname, url.pathname, function(error, body){
+      request(bSurl + "/" + urlQuery, function(error, body){
         if (!error) {
           resolve(body);
         }
@@ -26,9 +26,7 @@ export class Crawler{
 
     let repositorySearch = new Promise(function(resolve, reject, url){
 
-      let urlParse = new URL(url);
-
-      new request(urlParse.hostname, urlParse.pathname, function(error, body){
+      request(url, function(error, body){
         if (!error) {
           resolve(body);
         }
@@ -40,6 +38,7 @@ export class Crawler{
 
 
     initialSearch.then(function(body){
+      console.log("meme");
       let searchResponse = JSON.parse(body);
       let itemResponse = searchResponse["items"];
       itemResponse.forEach(function (item){
@@ -47,7 +46,8 @@ export class Crawler{
       });
     },
     function(error, responseCode){
-      Error(error + " : " + responseCode);
+
+      console.log(error + " : " + responseCode);
     }, query);
 
   }

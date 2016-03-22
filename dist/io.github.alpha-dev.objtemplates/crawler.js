@@ -11,11 +11,9 @@ var _repository_crawl = require("./repository_crawl.js");
 
 var _Rule = require("../io.github.alpha-dev.rules/Rule.js");
 
-var _request = require("../io.github.alpha-dev.utils/request.js");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var URL = require('url-parse');
+var request = require('request');
 
 var Crawler = exports.Crawler = function () {
   function Crawler(baseURL) {
@@ -28,11 +26,12 @@ var Crawler = exports.Crawler = function () {
     key: "beginCrawl",
     value: function beginCrawl(query) {
       //First step
+
+      var bSurl = this.BaseSearchURL;
+
       var initialSearch = new Promise(function (resolve, reject, urlQuery) {
 
-        var url = new URL(BaseSearchURL + "/" + urlQuery);
-
-        new request(url.hostname, url.pathname, function (error, body) {
+        request(bSurl + "/" + urlQuery, function (error, body) {
           if (!error) {
             resolve(body);
           } else {
@@ -43,9 +42,7 @@ var Crawler = exports.Crawler = function () {
 
       var repositorySearch = new Promise(function (resolve, reject, url) {
 
-        var urlParse = new URL(url);
-
-        new request(urlParse.hostname, urlParse.pathname, function (error, body) {
+        request(url, function (error, body) {
           if (!error) {
             resolve(body);
           } else {
@@ -55,13 +52,15 @@ var Crawler = exports.Crawler = function () {
       });
 
       initialSearch.then(function (body) {
+        console.log("meme");
         var searchResponse = JSON.parse(body);
         var itemResponse = searchResponse["items"];
         itemResponse.forEach(function (item) {
           new _repository_crawl.repository_crawl(item["full_name"], "", item["default_branch"], new _Rule.Rule());
         });
       }, function (error, responseCode) {
-        Error(error + " : " + responseCode);
+
+        console.log(error + " : " + responseCode);
       }, query);
     }
   }]);

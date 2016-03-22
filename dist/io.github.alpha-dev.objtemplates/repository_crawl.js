@@ -66,7 +66,7 @@ var repository_crawl = exports.repository_crawl = function () {
           }
         });
       }, function (error, responseCode) {
-        Error(error + " : " + responseCode);
+        console.log(error + " : " + responseCode);
       });
     }
   }, {
