@@ -1,16 +1,21 @@
-var request = require("request");
+import {repository_crawl} from "./repository_crawl.js";
+import {Rule} from "../io.github.alpha-dev.rules/Rule.js";
+import {Request} from "../io.github.alpha-dev.utils/request.js"
+var URL = require('url-parse');
 
-class Crawler{
-  //DEV: https://api.github.com/search/repositories?q=tetris+language:assembly&sort=stars&order=desc
-  const BaseSearchURL;
+export class Crawler{
+
   constructor(baseURL){
-    BaseSearchURL = baseURL;
+    this.BaseSearchURL = baseURL;
   }
   beginCrawl(query){
     //First step
     let initialSearch = new Promise(function(resolve, reject, urlQuery){
-      request(BaseSearchURL + "/" + urlQuery, function(error, response, body){
-        if (!error && response.statusCode == 200) {
+
+      let url = new URL(BaseSearchURL + "/" + urlQuery);
+
+      new request(url.hostname, url.pathname, function(error, body){
+        if (!error) {
           resolve(body);
         }
         else{
@@ -20,8 +25,11 @@ class Crawler{
     });
 
     let repositorySearch = new Promise(function(resolve, reject, url){
-      request(url, function(error, response, body){
-        if (!error && response.statusCode == 200) {
+
+      let urlParse = new URL(url);
+
+      new request(urlParse.hostname, urlParse.pathname, function(error, body){
+        if (!error) {
           resolve(body);
         }
         else{
@@ -35,7 +43,7 @@ class Crawler{
       let searchResponse = JSON.parse(body);
       let itemResponse = searchResponse["items"];
       itemResponse.forEach(function (item){
-        new repository_crawl(item["html_url"]);
+        new repository_crawl(item["full_name"], "", item["default_branch"], new Rule());
       });
     },
     function(error, responseCode){

@@ -1,11 +1,10 @@
-var gulp = require('gulp'),
-    babelify = require('babelify'),
-    browserify = require('gulp-browserify');
+const gulp = require('gulp');
+const babel = require('gulp-babel');
 
-gulp.task('babel', function () {
-  return gulp.src(['babel/main.js'])
-      .pipe(browserify({
-          transform:['babelify']
-      }))
-      .pipe(gulp.dest('script'));
+gulp.task('default', () => {
+	return gulp.src('babel/**/**.js')
+		.pipe(babel({
+			presets: ['es2015']
+		}))
+		.pipe(gulp.dest('dist'));
 });
