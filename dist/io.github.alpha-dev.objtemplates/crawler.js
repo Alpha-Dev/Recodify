@@ -28,21 +28,13 @@ var Crawler = exports.Crawler = function () {
       //First step
 
       var bSurl = this.BaseSearchURL;
-
-      var initialSearch = new Promise(function (resolve, reject, urlQuery) {
-
-        request(bSurl + "/" + urlQuery, function (error, body) {
-          if (!error) {
-            resolve(body);
-          } else {
-            reject(error, response.statusCode);
+      var initialSearch = new Promise(function (resolve, reject) {
+        request({
+          url: bSurl + "/" + query,
+          headers: {
+            'User-Agent': 'alpha-dev'
           }
-        });
-      });
-
-      var repositorySearch = new Promise(function (resolve, reject, url) {
-
-        request(url, function (error, body) {
+        }, function (error, response, body) {
           if (!error) {
             resolve(body);
           } else {
@@ -52,16 +44,16 @@ var Crawler = exports.Crawler = function () {
       });
 
       initialSearch.then(function (body) {
-        console.log("meme");
         var searchResponse = JSON.parse(body);
         var itemResponse = searchResponse["items"];
         itemResponse.forEach(function (item) {
           new _repository_crawl.repository_crawl(item["full_name"], "", item["default_branch"], new _Rule.Rule());
+          console.log("Repository : " + item["full_name"]);
         });
       }, function (error, responseCode) {
 
         console.log(error + " : " + responseCode);
-      }, query);
+      });
     }
   }]);
 
