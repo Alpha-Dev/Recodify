@@ -47,12 +47,11 @@ var Crawler = exports.Crawler = function () {
         var searchResponse = JSON.parse(body);
         var itemResponse = searchResponse["items"];
         itemResponse.forEach(function (item) {
-          new _repository_crawl.repository_crawl(item["full_name"], "", item["default_branch"], new _Rule.Rule());
           console.log("Repository : " + item["full_name"]);
+          new _repository_crawl.repository_crawl(item["full_name"], "", item["default_branch"], new _Rule.Rule()).getRootFiles();
         });
       }, function (error, responseCode) {
-
-        console.log(error + " : " + responseCode);
+        throw new Error(error + " : " + responseCode);
       });
     }
   }]);

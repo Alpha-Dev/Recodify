@@ -1,5 +1,6 @@
 import {repository_crawl} from "./repository_crawl.js";
 import {Rule} from "../io.github.alpha-dev.rules/Rule.js";
+
 var request = require('request');
 
 export class Crawler{
@@ -31,13 +32,12 @@ export class Crawler{
       let searchResponse = JSON.parse(body);
       let itemResponse = searchResponse["items"];
       itemResponse.forEach(function (item){
-        new repository_crawl(item["full_name"], "", item["default_branch"], new Rule());
         console.log("Repository : " + item["full_name"]);
+        new repository_crawl(item["full_name"], "", item["default_branch"], new Rule()).getRootFiles();
       });
     },
     function(error, responseCode){
-
-      console.log(error + " : " + responseCode);
+      throw new Error(error + " : " + responseCode);
     });
 
   }

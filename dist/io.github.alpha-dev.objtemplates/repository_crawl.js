@@ -8,6 +8,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var request = require('request');
+
 //Crawls the repo
 
 var repository_crawl = exports.repository_crawl = function () {
@@ -28,7 +30,13 @@ var repository_crawl = exports.repository_crawl = function () {
   _createClass(repository_crawl, [{
     key: "getRootFiles",
     value: function getRootFiles() {
+      var BASE_URL = this.BASE_URL;
+      var full_name = this.full_name;
+      var PATH = this.path;
+      var filePath = this.filePath;
+
       var findRootFiles = new Promise(function (resolve, reject) {
+        console.log(BASE_URL + full_name + PATH + filePath);
         request(BASE_URL + full_name + PATH + filePath, function (error, response, body) {
           if (!error && response.statusCode == 200) {
             resolve(body);

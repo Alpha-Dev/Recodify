@@ -18,4 +18,13 @@ gulp.task('runScript', ['build'], function() {
 		]));
 });
 
+gulp.task('test', ['build'], function() {
+	return gulp.src('./', {read: false})
+		.pipe(shell([
+			'mocha dist/tests/dev_tests.js'
+		]));
+});
+
 gulp.task('default', ['build', 'runScript']);
+
+gulp.task('buildTest', ['build', 'test']);

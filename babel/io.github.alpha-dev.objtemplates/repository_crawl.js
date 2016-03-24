@@ -1,3 +1,5 @@
+var request = require('request');
+
 //Crawls the repo
 export class repository_crawl{
   constructor(name, path, default_branch, rule){
@@ -11,7 +13,13 @@ export class repository_crawl{
 
   //Searches root of repository to get a list of files and directories
   getRootFiles(){
+    let BASE_URL = this.BASE_URL;
+    let full_name = this.full_name;
+    let PATH = this.path;
+    let filePath = this.filePath;
+
     let findRootFiles = new Promise(function(resolve, reject){
+      console.log(BASE_URL + full_name + PATH + filePath);
       request(BASE_URL + full_name + PATH + filePath, function(error, response, body){
         if (!error && response.statusCode == 200) {
           resolve(body);
@@ -54,7 +62,7 @@ export class repository_crawl{
         });
       },
       function(error, responseCode){
-        console.log(error + " : " + responseCode);
+        throw new Error(error + " : " + responseCode);
       });
 
   }
