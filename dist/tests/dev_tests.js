@@ -17,6 +17,6 @@ describe('Main Crawler', function () {
 
 describe('Repository Crawler', function () {
   it('Test repository crawler', function () {
-    new _repository_crawl.repository_crawl("Alpha-Dev/Recodify", "", "master", new _Rule.Rule());
+    var repoCrawl = new _repository_crawl.repository_crawl("Alpha-Dev/Recodify", "", "master", new _Rule.Rule()).getRootFiles();
   });
 });

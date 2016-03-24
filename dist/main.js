@@ -7,4 +7,4 @@ console.log("Running crawling..."); //import {Tester} from "./testClass.js";
 //testerthing.sayX();
 //let x = 0;
 
-new _crawler.Crawler("https://api.github.com/search").beginCrawl("repositories?q=tetris+language:assembly&sort=stars&order=desc");
+new _crawler.Crawler("https://api.github.com/search").beginCrawl("repositories?q=recodify");

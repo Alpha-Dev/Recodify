@@ -7,4 +7,4 @@ import {Crawler} from "./io.github.alpha-dev.objtemplates/crawler.js";
 
 console.log("Running crawling...");
 
-new Crawler("https://api.github.com/search").beginCrawl("repositories?q=tetris+language:assembly&sort=stars&order=desc");
+new Crawler("https://api.github.com/search").beginCrawl("repositories?q=recodify");

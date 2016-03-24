@@ -13,6 +13,6 @@ describe('Main Crawler', function(){
 
 describe('Repository Crawler', function(){
   it('Test repository crawler', function(){
-    new repository_crawl("Alpha-Dev/Recodify", "", "master", new Rule());
+    let repoCrawl = new repository_crawl("Alpha-Dev/Recodify", "", "master", new Rule()).getRootFiles();
   });
 });
