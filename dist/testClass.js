@@ -1,8 +1,23 @@
 "use strict";
 
-var _repository_crawl = require("./io.github.alpha-dev.objtemplates/repository_crawl.js");
+var _jsonWriter = require("./io.github.alpha-dev.objtemplates/jsonWriter.js");
 
-var _Rule = require("./io.github.alpha-dev.rules/Rule.js");
+var writer = new _jsonWriter.jsonWriter(__dirname + "/../database");
+console.log(__dirname + "/../database");
+writer.editInternalJsonFile("fuck", [["fucker", "hi"], ["meme", "widush"], ["life", "pain"]]);
+writer.writeInternalJsonFile().then(function () {
+  writer.editInternalJsonFile("124124", [["1414", "hi"], ["hail", "hitler"], ["uuu", "ow"]]);
+  writer.writeInternalJsonFile().then(function () {
+    writer.deleteJson("fuck").then(function () {
+      return console.log("fuck deleted");
+    });
+  });
+});
 
-console.log("meme");
-var repoCrawl = new _repository_crawl.repository_crawl("Alpha-Dev/Recodify", "", "master", new _Rule.Rule()).beginCrawl();
+/*
+writer.writeInternalJsonFile().then(
+writer.deleteJson("fuck").then(function(){
+  console.log("fuck deleted");
+})
+);
+*/

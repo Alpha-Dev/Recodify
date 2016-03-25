@@ -1,6 +1,7 @@
-import {Crawler} from "../io.github.alpha-dev.objtemplates/crawler.js";
-import {repository_crawl} from "../io.github.alpha-dev.objtemplates/repository_crawl.js";
-import {Rule} from "../io.github.alpha-dev.rules/Rule.js";
+/*
+import {Crawler} from "../dist/io.github.alpha-dev.objtemplates/crawler.js";
+import {repository_crawl} from "../dist/io.github.alpha-dev.objtemplates/repository_crawl.js";
+import {Rule} from "../dist/io.github.alpha-dev.rules/Rule.js";
 
 let test = require('unit.js');
 
@@ -16,3 +17,4 @@ describe('Repository Crawler', function(){
     let repoCrawl = new repository_crawl("Alpha-Dev/Recodify", "", "master", new Rule()).getRootFiles();
   });
 });
+*/

@@ -48,4 +48,6 @@ Temporary Items
 
 node_modules
 script
+dist
+database
 creds.txt

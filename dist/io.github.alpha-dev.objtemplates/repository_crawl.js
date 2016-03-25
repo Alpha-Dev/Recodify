@@ -15,7 +15,6 @@ var CLIENT_ID = "";
 var CLIENT_SECRET = "";
 
 var contents = fs.readFileSync('creds.txt', 'utf8');
-var arr = contents.split(":");
 CLIENT_ID = arr[0];
 CLIENT_SECRET = arr[1];
 
