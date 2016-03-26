@@ -17,9 +17,7 @@ console.log("CLIENT_ID: " + CLIENT_ID);
 var AUTH_STRING = "?client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET;
 
 function getBodyPromise(full_name, branch, filePath, fileNm){
-        //TODO: Commented out until bug fix
         //Promise which gets a file's body. Run only if the object type is a file
-        console.log("fileNm " + filePath + fileNm);
 
         return new Promise(function(resolve, reject){
           request("https://raw.githubusercontent.com/" + full_name + "/" + branch + "/" + filePath + "/" + fileNm, function(error, response, body){
@@ -96,15 +94,13 @@ export class repository_crawl{
         let searchResponse = JSON.parse(body);
         searchResponse.forEach(function (item){
 
-          //If this file has content then download content
+          //If this file has content then download contentx
           if(item["type"] === "file"){
             getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
                 //TODO
-                var file = filePath.split("/");
 
-                var fileSplit = file[file.length - 1].split(".");
-                var fileName = fileSplit[fileSplit.length - 1];
-                crawlRule.parseFile(body, fileName);
+                var fileSplit = item["name"].split(".");
+                crawlRule.parseFile(body, fileSplit[fileSplit.length - 1]);
             });
           }
           else{
@@ -155,12 +151,11 @@ export class repository_crawl{
 
         //If this file has content then download content
         if(item["type"] === "file"){
-          var file = filePath.split("/");
 
-          var fileSplit = file[file.length - 1].split(".");
-          var fileName = fileSplit[fileSplit.length - 1];
           getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
-              crawlRule.parseFile(body, fileName);
+
+            var fileSplit = item["name"].split(".");
+            crawlRule.parseFile(body, fileSplit[fileSplit.length - 1]);
           },
           function(error){
             console.log(error);
