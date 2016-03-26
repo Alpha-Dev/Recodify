@@ -23,14 +23,14 @@ gulp.task('runScript', ['build'], function() {
 		]));
 });
 
-gulp.task('test', ['build'], function() {
+gulp.task('test', ['moveTests'], function() {
 	return gulp.src('./', {read: false})
 		.pipe(shell([
-			'mocha dist/tests/dev_tests.js'
+			'mocha'
 		]));
 });
 
 
-gulp.task('default', ['build','moveTests']);
+gulp.task('default', ['build','moveTests',"test"]);
 
 gulp.task('buildTest', ['build', 'test']);

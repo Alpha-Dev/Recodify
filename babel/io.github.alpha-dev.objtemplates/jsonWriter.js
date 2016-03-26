@@ -23,6 +23,9 @@ export class jsonWriter{
     changeFilePath(passed_filepath){
       this.filepath = passed_filepath;
     }
+    overWriteInternalJson(passed_obj){
+      this.internalJson = passed_obj;
+    }
     toString(){
       let thisContext = this;
       return JSON.stringify(thisContext.internalJson);
