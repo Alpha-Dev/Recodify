@@ -1,8 +1,6 @@
-import {jsonWriter} from "../dist/io.github.alpha-dev.objtemplates/jsonWriter.js";
-import {jsonReader} from "../dist/io.github.alpha-dev.objtemplates/jsonReader.js";
+import {jsonWriter} from "../dist/io.github.alpha-dev.objtemplates/jsonData.js";
 
 let writer = new jsonWriter(__dirname+"/database");
-let reader = new jsonReader(__dirname+"/database");
 let test = require('unit.js');
 let fs = require("fs");
 
@@ -10,8 +8,8 @@ describe('JSON Writer Tests', function () {
   describe("Writing",function(){
   let first_file_toString;
   it('should change create a file', function (done) {
-    writer.editInternalJsonFile("test",[["d","hi"],["meme","widush"],["life","pain"]]);
-    writer.writeInternalJsonFile().then(()=>{
+    writer.editJsonFile("test",[["d","hi"],["meme","widush"],["life","pain"]]);
+    writer.writeJsonFile().then(()=>{
       fs.exists(__dirname+"/database/test.json", (exists) => {
         test.assert(exists === true);
         first_file_toString = writer.toString();
@@ -20,8 +18,8 @@ describe('JSON Writer Tests', function () {
     });
   });
   it('should change create a different file', function (done) {
-    writer.editInternalJsonFile("test2",[["d4","hi"],["mem44e","widush"],["lif44e","pain"]]);
-    writer.writeInternalJsonFile().then(()=>{
+    writer.editJsonFile("test2",[["d4","hi"],["mem44e","widush"],["lif44e","pain"]]);
+    writer.writeJsonFile().then(()=>{
       test.assert(first_file_toString != writer.toString());
       done();
     });
@@ -48,12 +46,16 @@ describe('JSON Writer Tests', function () {
 });
 describe('JSON Reader Tests',()=>{
   before(function(done){
-    writer.editInternalJsonFile("test",[["d","hi"],["meme","widush"],["life","plain"]]);
-    writer.writeInternalJsonFile().then(()=>{
-      writer.editInternalJsonFile("test2",[["d","gaf"],["mfuck","widush"],["gfe","pgin"]]);
-    writer.writeInternalJsonFile().then(()=>{
-      writer.editInternalJsonFile("test3",[["d","gaf"],["mfuck","widush"],["gfe","pgin"]]);
-    writer.writeInternalJsonFile().then(()=>{
+    writer.editJsonFile("test",[["d","hi"],["meme","widush"],["testerval",1]]);
+    writer.writeJsonFile().then(()=>{
+      writer.editJsonFile("test2",[["d","gaf"],["mfuck","widush"],["gfe",JSON.stringify(["test","test","test"])]]);
+    writer.writeJsonFile().then(()=>{
+      writer.editJsonFile("test3",[["d","gaf"],["mduck",true],["gfe",JSON.stringify({
+        thing:"test",
+        fucker:"meme"
+      })
+    ]]);
+    writer.writeJsonFile().then(()=>{
       done();
     });
     });
@@ -61,27 +63,75 @@ describe('JSON Reader Tests',()=>{
   });
   describe("Reading",()=>{
     it('should read the json file',(done)=>{
-      reader.loadJson("test").then(()=>{
-        test.assert(reader.getInternalJsonValue().id === "test");
+      writer.loadJson("test").then(()=>{
+        test.assert(writer.getJsonValue().id === "test");
         done();
+      });
+    });
+    describe("Get File Names and Full Array",()=>{
+      it("should have 3 files",(done)=>{
+        writer.getFileNames().then((files)=>{
+          test.assert(files.length === 3);
+          done();
+        });
+      });
+      it("should contain test.json, test2.json and test3.json",(done)=>{
+        writer.getDatabaseArray().then((arr)=>{
+          test.assert(arr[0].id === 'test');
+          test.assert(arr[1].id === 'test2');
+          test.assert(arr[2].id === 'test3');
+          done();
+        });
+      });
+    });
+    describe("Searching The Database",(done)=>{
+      it("should find the JSON with a testerval of 1",(done)=>{
+        writer.searchDatabase("testerval","===",1).then((files)=>{
+          test.assert(files[0].id === "test");
+          done();
+        });
+      });
+      it("should find the JSON with a matching object value for gfe",(done)=>{
+        writer.searchDatabase("gfe","===",JSON.stringify({
+          thing:"test",
+          fucker:"meme"
+        })).then((files)=>{
+          test.assert(files[0].id === "test3");
+          done();
+        });
+      });
+      it("should find the JSON with a matching array value for gfe",(done)=>{
+        writer.searchDatabase("gfe","===",JSON.stringify(["test","test","test"])).then(files=>{
+          test.assert(files[0].id === "test2");
+          done();
+        });
+      });
+      it("should find the JSON with a true value for mduck",done=>{
+        writer.searchDatabase("mduck","===",true).then(files=>{
+          test.assert(files[0].id === "test3");
+          done();
+        });
+      });
+      it("should find the JSON with a testerval greater than 0",done=>{
+        writer.searchDatabase("testerval",">",0).then(files=>{
+          test.assert(files[0].id === "test");
+          done();
+        });
+      });
+      it("should find the JSON with a testerval < 2",done=>{
+        writer.searchDatabase("testerval","<",2).then(files=>{
+          test.assert(files[0].id === "test");
+          done();
+        });
+      });
+      it("should find the JSONs with a d value not equal to hi",done=>{
+        writer.searchDatabase("d","!==","hi").then(files=>{
+          test.assert(files.length === 2);
+          done();
+        });
       });
     });
   });
-  describe("Get File Names and Full Array",()=>{
-    it("should have 3 files",(done)=>{
-      reader.getFileNames().then((files)=>{
-        test.assert(files.length === 3);
-        done();
-      });
-    });
-    it("should contain test.json, test2.json and test3.json",(done)=>{
-      reader.getFullDatabaseArray().then((arr)=>{
-        test.assert(arr[0].id === 'test');
-        test.assert(arr[1].id === 'test2');
-        test.assert(arr[2].id === 'test3');
-        done();
-      });
-    });
-  });
+
 //dddddfuck
 });
