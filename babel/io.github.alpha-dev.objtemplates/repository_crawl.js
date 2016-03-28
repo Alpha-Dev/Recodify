@@ -1,6 +1,7 @@
 var request = require('request');
 var fs = require('fs');
 
+//TODO: Rewrite this class to actually not be full of hacks and stuff that even I don't understand
 
 var CLIENT_ID = "";
 var CLIENT_SECRET = "";
@@ -36,11 +37,12 @@ function getBodyPromise(full_name, branch, filePath, fileNm){
 //Crawls the repo
 export class repository_crawl{
   //NOTE: ES6 has issues with classwide variables, set them here using 'this'
-  constructor(name, path, default_branch, rule){
+  constructor(name, path, default_branch, rule, dirRule){
     this.full_name = name;
     this.crawlRule = rule;
     this.filePath = path;
     this.branch = default_branch;
+    this.dirRule = dirRule;
     this.BASE_URL = "https://api.github.com/repos/";
     this.PATH = "/contents/";
   }
@@ -54,6 +56,7 @@ export class repository_crawl{
     let branch = this.branch;
     let filePath = this.filePath;
     let crawlRule = this.crawlRule;
+    let dirRule = this.dirRule;
 
     //Promise that finds files in the repository's root direcetory
     let findRootFiles = new Promise(function(resolve, reject){
@@ -98,15 +101,13 @@ export class repository_crawl{
           if(item["type"] === "file"){
             getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
                 //TODO
-
-                var fileSplit = item["name"].split(".");
-                crawlRule.parseFile(body, fileSplit[fileSplit.length - 1]);
+                crawlRule.parseItem(body, item["name"], item["type"]);
             });
           }
           else{
             //Otherwise crawl through the directory
-
-            new repository_crawl(full_name, "/" + item["name"], branch, crawlRule).beginDirectoryCrawl(item["name"] + "/");
+            dirRule.parseItem(null, item["name"], item["type"]);
+            new repository_crawl(full_name, "/" + item["name"], branch, crawlRule).beginDirectoryCrawl(item["name"] + "/", dirRule);
           }
         });
       },
@@ -125,6 +126,7 @@ export class repository_crawl{
     let branch = this.branch;
     let filePath = this.filePath;
     let crawlRule = this.crawlRule;
+    let dirRule = this.dirRule;
 
     let findRootFiles = new Promise(function(resolve, reject){
       request({
@@ -153,9 +155,7 @@ export class repository_crawl{
         if(item["type"] === "file"){
 
           getBodyPromise(full_name, branch, filePath, item["name"]).then(function(body){
-
-            var fileSplit = item["name"].split(".");
-            crawlRule.parseFile(body, fileSplit[fileSplit.length - 1]);
+            crawlRule.parseItem(body, item["name"], item["type"]);
           },
           function(error){
             console.log(error);
@@ -164,8 +164,8 @@ export class repository_crawl{
         }
         else{
           //Otherwise crawl through the directory
-
-          new repository_crawl(full_name, "/" + currentDir + item["name"], branch, crawlRule).beginDirectoryCrawl(currentDir + item["name"] + "/");
+          dirRule.parseItem(null, item["name"], item["type"]);
+          new repository_crawl(full_name, "/" + currentDir + item["name"], branch, crawlRule, dirRule).beginDirectoryCrawl(currentDir + item["name"] + "/");
         }
       });
     },
