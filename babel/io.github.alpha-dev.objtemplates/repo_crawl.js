@@ -24,7 +24,9 @@ export class repo_crawl{
     let fullName = this.fullName;
     let dirPath = this.dirPath;
     let branch = this.branch;
-    let rule = new RuleType(fullName, branch, dirPath);
+
+    //TODO: expand
+    let rule = new RuleType(fullName, branch, dirPath, AUTH_STRING);
 
 
     //-------------Define Item Crawl Promise--------------

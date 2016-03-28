@@ -17,7 +17,6 @@ var AUTH_STRING = "?client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET;
 //---------------Read Credentials from file-----------------
 
 import {Crawler} from "./io.github.alpha-dev.objtemplates/crawler.js";
-import {RepositoryRule} from "./io.github.alpha-dev.rules/Rule.js";
 
 console.log("Running crawling...");
 

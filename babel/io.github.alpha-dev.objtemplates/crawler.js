@@ -1,6 +1,4 @@
 import {repo_crawl} from "./repo_crawl.js";
-import {ItemRule} from "../io.github.alpha-dev.rules/Rule.js";
-import {DirectoryRule} from "../io.github.alpha-dev.rules/DirectoryRule.js";
 
 //TODO: Comment this stuff
 

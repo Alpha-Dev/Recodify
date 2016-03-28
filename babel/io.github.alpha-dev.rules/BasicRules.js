@@ -2,14 +2,22 @@ import {repo_crawl} from "../io.github.alpha-dev.objtemplates/repo_crawl.js"
 var request = require('request');
 
 export class DirectoryRule{
-  constructor(item){
+  constructor(item, fullName, branch, authString){
     this.item = item;
+    this.fullName = fullName;
+    this.branch = branch;
+    this.authString = authString;
   }
 
   execute(){
     let item = this.item;
+    let fullName = this.fullName;
+    let branch = this.branch;
+
+    console.log("/" + item["path"]);
+
     console.log("Directory: This is an abstract function");
-    new repo_crawl(item["full_name"], "/" + item["name"], item["default_branch"]).getRootFiles();
+    new repo_crawl(fullName, "/" + item["path"], branch, this.authString).startCrawl();
   }
 }
 
@@ -25,10 +33,11 @@ export class FileRule{
 }
 
 export class RuleType{
-  constructor(reponame, repoBranch, repoPath){
+  constructor(reponame, repoBranch, repoPath, authString){
     this.reponame = reponame;
     this.repoBranch = repoBranch;
     this.repoPath = repoPath;
+    this.authString = authString;
   }
 
   parseItem(item){
@@ -48,7 +57,7 @@ export class RuleType{
       });
     }
     else{
-      new DirectoryRule(item).execute();
+      new DirectoryRule(item, this.reponame, this.repoBranch, this.authString).execute();
     }
   }
 
