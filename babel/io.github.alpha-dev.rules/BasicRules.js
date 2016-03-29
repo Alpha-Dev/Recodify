@@ -1,4 +1,6 @@
 import {repo_crawl} from "../io.github.alpha-dev.objtemplates/repo_crawl.js"
+import {TestRule} from "./TestRule.js"
+
 var request = require('request');
 
 export class DirectoryRule{
@@ -14,9 +16,6 @@ export class DirectoryRule{
     let fullName = this.fullName;
     let branch = this.branch;
 
-    console.log("/" + item["path"]);
-
-    console.log("Directory: This is an abstract function");
     new repo_crawl(fullName, "/" + item["path"], branch, this.authString).startCrawl();
   }
 }
@@ -32,6 +31,7 @@ export class FileRule{
   }
 }
 
+//Sorts the file as either file or directory
 export class RuleType{
   constructor(reponame, repoBranch, repoPath, authString){
     this.reponame = reponame;
@@ -49,7 +49,8 @@ export class RuleType{
        + "/" + this.repoPath + "/" + item["name"], function(error, response, body){
 
         if (!error && response.statusCode == 200) {
-          new FileRule(body, item["name"]).execute();
+          //Change rules here
+          new TestRule(body, item["name"]).execute();
         }
         else{
           console.log(err + " : " + statusCode);
